@@ -97,15 +97,28 @@ namespace Vernacular.Parsers
         public override IEnumerable<ILocalizationUnit> Parse ()
         {
             return from xml_path in xml_paths
-                   from resource in XDocument.Load (xml_path, LoadOptions.SetLineInfo).Elements ("resources")
-                   from @string in resource.Elements ("string")
-                   select new LocalizedString {
-                       Name = @string.Attribute ("name").Value,
-                       References = new [] {
-                           String.Format ("{0}:{1}", xml_path, ((IXmlLineInfo)@string).LineNumber)
-                       },
-                       UntranslatedSingularValue = DecodeElement (@string)
-                   };
+                   from resource in XDocument.Load(xml_path, LoadOptions.SetLineInfo).Elements("resources")
+                   from @string in resource.Elements("string")
+                   let name = @string.Attribute("name").Value
+                   let value = DecodeElement(@string)
+                   select CreateLocalizedString(name, value, String.Format("{0}:{1}", xml_path, ((IXmlLineInfo)@string).LineNumber));
+        }
+
+        private LocalizedString CreateLocalizedString(string name, string value, string reference) {
+            var ret = new LocalizedString {
+                Name = name,
+                References = new[] { reference }
+            };
+
+            if (RetainIds) {
+                ret.UntranslatedSingularValue = name;
+                ret.TranslatedValues = new string[] { value };
+            }
+            else {
+                ret.UntranslatedSingularValue = value;
+            }
+
+            return ret;
         }
     }
 }

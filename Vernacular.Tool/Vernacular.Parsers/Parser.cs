@@ -36,6 +36,8 @@ namespace Vernacular.Parsers
         public virtual int LogLevel { get; set; }
         public virtual string SourceRootPath { get; set; }
 
+        public virtual bool RetainIds { get; set; }
+
         public abstract IEnumerable<string> SupportedFileExtensions { get; }
         public abstract void Add (string path);
         public abstract void Add (Stream stream, string path);

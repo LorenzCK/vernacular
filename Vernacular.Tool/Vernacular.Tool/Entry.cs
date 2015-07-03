@@ -59,6 +59,7 @@ namespace Vernacular.Tool
             bool log = false;
             bool verbose = false;
             bool retain_order = false;
+            bool retain_ids = false;
             bool show_help = false;
             bool count_words = false;
             int word_count = 0;
@@ -73,6 +74,7 @@ namespace Vernacular.Tool
                     String.Join ("|", Generator.GeneratorNames)), v => generator_name = v },
                 { "retain-order", "Retain the original input string order when generating. " +
                     "Default behavior is to sort strings for better diff support.", v => retain_order = v != null },
+                { "retain-ids", "Retains original IDs when parsing input files." , v => retain_ids = v != null },
                 { "a|analyze", "Run the string analyzer after generation", v => analyze = v != null },
                 { "analyzer-config=", "Path to a configuration file for the analyzer; use with --analyze", v => analyer_config_path = v },
                 { "analyzer-warnaserror", "Treat analyzer warnings as errors", v => analyzer_warn_as_error = v != null },
@@ -157,7 +159,8 @@ namespace Vernacular.Tool
             }
 
             var parser = new AggregateParser {
-                SourceRootPath = source_root_path
+                SourceRootPath = source_root_path,
+                RetainIds = retain_ids
             };
 
             if (verbose) {

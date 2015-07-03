@@ -112,5 +112,14 @@ namespace Vernacular.Parsers
                    from localization_unit in parser.Parse ()
                    select localization_unit;
         }
+
+        public override bool RetainIds {
+            set {
+                base.RetainIds = value;
+
+                foreach (var parser in parsers)
+                    parser.RetainIds = value;
+            }
+        }
     }
 }
